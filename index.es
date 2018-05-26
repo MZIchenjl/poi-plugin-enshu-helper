@@ -2,15 +2,23 @@ import path from 'path'
 import axios from 'axios'
 import { connect } from 'react-redux'
 import React, { PureComponent } from 'react'
+import { createSelector } from 'reselect'
 import { Table, ButtonToolbar, Button, Well } from 'react-bootstrap'
+
+import { basicSelector } from 'views/utils/selectors'
+
+const poiDataSelector = createSelector(
+  [basicSelector],
+  basic => ({
+    api_member_id: basic.api_member_id
+  })
+)
 
 import EnemyInfo from './components/EnemyInfo'
 
 const { _, notify, toast } = window
 
-export const reactClass = connect(state => ({
-  api_member_id: state.info.basic.api_member_id
-}))(
+export const reactClass = connect(state => poiDataSelector(state))(
   class PluginSenkaViewer extends PureComponent {
     constructor(props) {
       super(props)
@@ -47,10 +55,10 @@ export const reactClass = connect(state => ({
     submit() {
       const { api_member_id } = this.props
       const { selected } = this.state
-      console.log({
+      console.log(JSON.stringify({
         api_member_id: api_member_id,
         api_enemy_list: selected
-      })
+      }))
     }
     handleSelect(enemy_id) {
       const { selected, api_list } = this.state
@@ -110,9 +118,13 @@ export const reactClass = connect(state => ({
     }
     render() {
       const { selected } = this.state
+      const { api_member_id } = this.props
       return (
         <div id='enshu-helper'>
           <link rel='stylesheet' href={path.join(__dirname, 'assets/enshu-helper.css')} />
+          <div className='member_id'>
+            ID: {api_member_id}
+          </div>
           {this.state.api_list.length ? (
             <ButtonToolbar className='toolbar'>
               <Button disabled={!selected.length} onClick={this.resetAll.bind(this)}>清空</Button>
