@@ -1,0 +1,34 @@
+{
+    "name": "poi-plugin-enshu-helper",
+    "version": "0.0.0",
+    "description": "POI演习助手插件",
+    "main": "index.es",
+    "poiPlugin": {
+        "title": "演习助手",
+        "description": "POI演习助手插件。",
+        "icon": "fa/handshake-o",
+        "apiVer": {
+            "8.0.0": "0.0.0"
+        }
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/MZIchenjl/poi-plugin-enshu-helper.git"
+    },
+    "keywords": [
+        "poi",
+        "poi-plugin",
+        "kancolle"
+    ],
+    "author": {
+        "name": "MZI",
+        "url": "https://github.com/MZIchenjl"
+    },
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/MZIchenjl/poi-plugin-enshu-helper/issues"
+    },
+    "dependencies": {
+        "axios": "^0.18.0"
+    }
+}
