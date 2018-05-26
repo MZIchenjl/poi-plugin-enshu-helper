@@ -1,0 +1,31 @@
+#enshu-helper .enemy-list {
+    width: 400px;
+    margin: 1em;
+}
+
+#enshu-helper .toolbar {
+    margin: calc(1em - 5px);
+}
+
+#enshu-helper .message {
+    margin: 1em;
+}
+
+#enshu-helper .enemy-list-item * {
+    cursor: pointer;
+}
+
+#enshu-helper .enemy-list-item.active {
+    outline: #3b99fc solid 2px;
+    outline-offset: -1px;
+}
+
+#enshu-helper .enemy-list-item.disabled {
+    outline: #ae482e solid 2px;
+    outline-offset: -1px;
+    background-color: #464545;
+}
+
+#enshu-helper .enemy-list-item.disabled * {
+    cursor: not-allowed;
+}
