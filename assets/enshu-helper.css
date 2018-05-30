@@ -26,9 +26,3 @@
     outline: #3b99fc solid 2px;
     outline-offset: -1px;
 }
-
-#enshu-helper .enemy-list-item.disabled {
-    outline: #ae482e solid 2px;
-    outline-offset: -1px;
-    background-color: #464545;
-}
