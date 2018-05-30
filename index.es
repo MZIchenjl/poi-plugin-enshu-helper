@@ -23,7 +23,6 @@ export const reactClass = connect(state => poiDataSelector(state))(
     constructor(props) {
       super(props)
       this.state = {
-        selected: [],
         api_list: []
       }
     }
@@ -39,7 +38,7 @@ export const reactClass = connect(state => poiDataSelector(state))(
               state: enemy.api_state,
               level: enemy.api_enemy_level,
               rank: enemy.api_enemy_rank,
-              status: 0
+              status: enemy.api_state ? -1 : 0
             }))
           })
           break
@@ -47,40 +46,22 @@ export const reactClass = connect(state => poiDataSelector(state))(
           break
       }
     }
-    resetAll() {
-      this.setState({
-        selected: []
-      })
-    }
     submit() {
       const { api_member_id } = this.props
-      const { selected } = this.state
+      const { api_list } = this.state
+      const enemies = []
+      for (let i = 0, len = api_list.length; i < len; i++) {
+        if (!api_list[i].state) {
+          enemies.push(api_list[i].id)
+        }
+      }
       console.log(JSON.stringify({
         api_member_id: api_member_id,
-        api_enemy_list: selected
+        api_enemy_list: enemies
       }))
     }
-    handleSelect(enemy_id) {
-      const { selected, api_list } = this.state
-      const enemy = _.find(api_list, enemy => enemy.id === enemy_id)
-      if (!enemy) {
-        return
-      }
-      if (!!enemy.state) {
-        return
-      }
-      const idx = _.indexOf(selected, enemy_id)
-      if (idx === -1) {
-        selected.push(enemy_id)
-      } else {
-        selected.splice(idx, 1)
-      }
-      this.setState({
-        selected: [...selected]
-      })
-    }
     renderList() {
-      const { api_list, selected } = this.state
+      const { api_list } = this.state
       if (!api_list.length) {
         return (
           <Well className='message'>未获取到演习数据，请点击演习获取相关数据</Well>
@@ -100,9 +81,6 @@ export const reactClass = connect(state => poiDataSelector(state))(
             {_.map(api_list, enemy => (
               <EnemyInfo
                 key={enemy.id}
-                onClick={this.handleSelect.bind(this, enemy.id)}
-                disabled={!!enemy.state}
-                active={_.includes(selected, enemy.id)}
                 {...enemy}
               />
             ))}
@@ -117,7 +95,6 @@ export const reactClass = connect(state => poiDataSelector(state))(
       window.removeEventListener('game.response', this.handleResponse)
     }
     render() {
-      const { selected } = this.state
       const { api_member_id } = this.props
       return (
         <div id='enshu-helper'>
@@ -127,8 +104,7 @@ export const reactClass = connect(state => poiDataSelector(state))(
           </div>
           {this.state.api_list.length ? (
             <ButtonToolbar className='toolbar'>
-              <Button disabled={!selected.length} onClick={this.resetAll.bind(this)}>清空</Button>
-              <Button disabled={!selected.length} onClick={this.submit.bind(this)} bsStyle='primary'>提交</Button>
+              <Button onClick={this.submit.bind(this)} bsStyle='primary'>提交</Button>
             </ButtonToolbar>
           ) : null}
           {this.renderList()}
