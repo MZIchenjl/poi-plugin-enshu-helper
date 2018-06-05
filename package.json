@@ -13,7 +13,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/MZIchenjl/poi-plugin-enshu-helper.git"
+        "url": "git+https://github.com/kcwikizh/poi-plugin-enshu-helper.git"
     },
     "keywords": [
         "poi",
@@ -26,7 +26,7 @@
     },
     "license": "MIT",
     "bugs": {
-        "url": "https://github.com/MZIchenjl/poi-plugin-enshu-helper/issues"
+        "url": "https://github.com/kcwikizh/poi-plugin-enshu-helper/issues"
     },
     "dependencies": {
         "axios": "^0.18.0"
