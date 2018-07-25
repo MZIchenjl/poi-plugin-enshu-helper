@@ -26,7 +26,7 @@ export const reactClass = connect(state => poiDataSelector(state))(
         api_list: []
       }
     }
-    handleResponse = e => {
+    handleResponse(e) {
       const { path: _path, body } = e.detail
       switch (_path) {
         case '/kcsapi/api_get_member/practice':
@@ -89,10 +89,10 @@ export const reactClass = connect(state => poiDataSelector(state))(
       )
     }
     componentDidMount() {
-      window.addEventListener('game.response', this.handleResponse)
+      window.addEventListener('game.response', this.handleResponse.bind(this))
     }
     componentWillUnmount() {
-      window.removeEventListener('game.response', this.handleResponse)
+      window.removeEventListener('game.response', this.handleResponse.bind(this))
     }
     render() {
       const { api_member_id } = this.props
