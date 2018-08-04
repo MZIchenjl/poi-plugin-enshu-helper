@@ -73,7 +73,7 @@ export const reactClass = connect(state => poiDataSelector(state))(
               const matchedIds = res.matchlist.map(t => t.memberid)
               enemies.forEach(memberid => {
                 const idx = api_list.findIndex(t => t.id === memberid)
-                if (idx) {
+                if (idx !== -1) {
                   if (matchedIds.includes(memberid)) {
                     api_list[idx].status = 1
                   } else {
