@@ -1,11 +1,11 @@
 import React, { PureComponent } from 'react'
 
-const stateMap = ['-', 'E', 'D', 'C', 'B', 'A', 'S']
-const stateColorMap = ['', '#246af2', '#07f64c', '#2bf224', '#ff9914', '#e9513d', '#feed6f']
-const statusMap = {
-  [-1]: '已对战', 0: '未确定', 1: '已成功', 2: '已失败'
+const stateText = ['-', 'E', 'D', 'C', 'B', 'A', 'S']
+const stateColor = ['', '#246af2', '#07f64c', '#2bf224', '#ff9914', '#e9513d', '#feed6f']
+const statusText = {
+  [-1]: '演习完成', 0: '状态未知', 1: '匹配成功', 2: '无法匹配'
 }
-const statusColorMap = {
+const statusColor = {
   [-1]: '#fbfbfb', 0: '#07f64c', 1: '#feed6f', 2: '#e9513d'
 }
 
@@ -16,13 +16,13 @@ export default class extends PureComponent {
       <tr className='enemy-list-item'>
         <td>
           {name}
-          (<span style={{ color: stateColorMap[state] }}>{stateMap[state]}</span>)
+          (<span style={{ color: stateColor[state] }}>{stateText[state]}</span>)
         </td>
         <td>{`Lv ${level}`}</td>
         <td>{rank}</td>
         <td style={{
-          color: statusColorMap[status]
-        }}>{statusMap[status]}</td>
+          color: statusColor[status]
+        }}>{statusText[status]}</td>
       </tr>
     )
   }
