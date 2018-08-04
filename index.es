@@ -18,6 +18,8 @@ import EnemyInfo from './components/EnemyInfo'
 
 const { _, notify, toast } = window
 
+const URL = 'https://api.senka.com.ru/enshuhelper/query'
+
 export const reactClass = connect(state => poiDataSelector(state))(
   class PluginSenkaViewer extends PureComponent {
     constructor(props) {
@@ -55,10 +57,42 @@ export const reactClass = connect(state => poiDataSelector(state))(
           enemies.push(api_list[i].id)
         }
       }
-      console.log(JSON.stringify({
+      const data = {
         api_member_id: api_member_id,
         api_enemy_list: enemies
-      }))
+      }
+      console.log('POST data: ', JSON.stringify(data))
+      axios.post(URL, data)
+        .then(res => res.data)
+        .then(res => {
+          switch (res.code) {
+            case 1:
+              toast(res.info || '未知错误')
+              break
+            case 2:
+              const matchedIds = res.matchlist.map(t => t.memberid)
+              enemies.forEach(memberid => {
+                const idx = api_list.findIndex(t => t.id === memberid)
+                if (idx) {
+                  if (matchedIds.includes(memberid)) {
+                    api_list[idx].status = 1
+                  } else {
+                    api_list[idx].status = 2
+                  }
+                }
+              })
+              this.setState({
+                api_list: [].concat(api_list)
+              })
+              break
+            default:
+              break
+          }
+        })
+        .catch(err => {
+          console.log(err)
+          notify('接口请求错误: ' + err.toString())
+        })
     }
     renderList() {
       const { api_list } = this.state
