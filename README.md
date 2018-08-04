@@ -4,4 +4,4 @@
 
 ## Screenshot
 
-![Screenshot](https://miao.su/images/2018/08/04/screenshot3e327.png)
+<img width="400" alt="screenshot" src="https://miao.su/images/2018/08/04/screenshot3e327.png" />
