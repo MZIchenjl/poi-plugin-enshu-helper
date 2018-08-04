@@ -53,7 +53,7 @@ export const reactClass = connect(state => poiDataSelector(state))(
       const { api_list } = this.state
       const enemies = []
       for (let i = 0, len = api_list.length; i < len; i++) {
-        if (!api_list[i].state) {
+        if (!api_list[i].status) {
           enemies.push(api_list[i].id)
         }
       }
