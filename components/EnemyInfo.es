@@ -6,7 +6,7 @@ const statusText = {
   [-1]: '演习完成', 0: '状态未知', 1: '匹配成功', 2: '无法匹配'
 }
 const statusColor = {
-  [-1]: '#fbfbfb', 0: '#07f64c', 1: '#feed6f', 2: '#e9513d'
+  [-1]: '#fbfbfb', 0: '#feed6f', 1: '#07f64c', 2: '#e9513d'
 }
 
 export default class extends PureComponent {
