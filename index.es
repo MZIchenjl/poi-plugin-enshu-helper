@@ -3,7 +3,7 @@ import axios from 'axios'
 import { connect } from 'react-redux'
 import React, { PureComponent } from 'react'
 import { createSelector } from 'reselect'
-import { Table, ButtonToolbar, Button, Well } from 'react-bootstrap'
+import { Table, Button, Well } from 'react-bootstrap'
 
 import { basicSelector } from 'views/utils/selectors'
 
@@ -40,7 +40,9 @@ export const reactClass = connect(state => poiDataSelector(state))(
               state: enemy.api_state,
               level: enemy.api_enemy_level,
               rank: enemy.api_enemy_rank,
-              status: enemy.api_state ? -1 : 0
+              status: enemy.api_state ? -1 : 0,
+              comment: '--',
+              qqgroup: '--'
             }))
           })
           break
@@ -51,12 +53,13 @@ export const reactClass = connect(state => poiDataSelector(state))(
     submit() {
       const { api_member_id } = this.props
       const { api_list } = this.state
-      const enemies = []
-      for (let i = 0, len = api_list.length; i < len; i++) {
-        if (!api_list[i].status) {
-          enemies.push(api_list[i].id)
+      const enemies = api_list.reduce((acc, enemy) => {
+        const ret = acc
+        if (!enemy.status) {
+          ret.push(enemy.id)
         }
-      }
+        return ret
+      }, [])
       const data = {
         api_member_id: api_member_id,
         api_enemy_list: enemies
@@ -68,26 +71,42 @@ export const reactClass = connect(state => poiDataSelector(state))(
           switch (res.code) {
             case 1:
               toast(res.info || '未知错误')
+              enemies.forEach(memberid => {
+                const idx = api_list.findIndex(t => t.id === memberid)
+                if (idx !== -1) {
+                  api_list[idx].status = 2
+                }
+              })
               break
             case 2:
               const matchedIds = res.matchlist.map(t => t.memberid)
+              const infoList = res.matchlist.reduce((acc, t) => {
+                const ret = acc
+                ret[t.memberid] = {
+                  comment: t.comments,
+                  qqgroup: t.qqgroup
+                }
+                return ret
+              }, {})
               enemies.forEach(memberid => {
                 const idx = api_list.findIndex(t => t.id === memberid)
                 if (idx !== -1) {
                   if (matchedIds.includes(memberid)) {
                     api_list[idx].status = 1
+                    api_list[idx].comment = infoList[memberid].comment
+                    api_list[idx].qqgroup = infoList[memberid].qqgroup
                   } else {
                     api_list[idx].status = 2
                   }
                 }
               })
-              this.setState({
-                api_list: [].concat(api_list)
-              })
               break
             default:
               break
           }
+          this.setState({
+            api_list: [].concat(api_list)
+          })
         })
         .catch(err => {
           console.log(err)
@@ -109,6 +128,8 @@ export const reactClass = connect(state => poiDataSelector(state))(
               <th>等级</th>
               <th>军衔</th>
               <th>状态</th>
+              <th>Q群</th>
+              <th>签名</th>
             </tr>
           </thead>
           <tbody>
@@ -129,6 +150,7 @@ export const reactClass = connect(state => poiDataSelector(state))(
       window.removeEventListener('game.response', this.handleResponse.bind(this))
     }
     render() {
+      const { api_list } = this.state
       const { api_member_id } = this.props
       return (
         <div id='enshu-helper'>
@@ -136,10 +158,12 @@ export const reactClass = connect(state => poiDataSelector(state))(
           <div className='member_id'>
             ID: {api_member_id}
           </div>
-          {this.state.api_list.length ? (
-            <ButtonToolbar className='toolbar'>
-              <Button onClick={this.submit.bind(this)} bsStyle='primary'>提交</Button>
-            </ButtonToolbar>
+          {api_list.length ? (
+            <Button bsStyle='primary'
+              onClick={this.submit.bind(this)}
+              disabled={api_list.every(enemy => !!enemy.status)}>
+              提交
+            </Button>
           ) : null}
           {this.renderList()}
         </div>

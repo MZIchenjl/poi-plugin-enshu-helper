@@ -11,7 +11,7 @@ const statusColor = {
 
 export default class extends PureComponent {
   render() {
-    const { name, level, state, rank, status } = this.props
+    const { name, level, state, rank, status, comment, qqgroup } = this.props
     return (
       <tr className='enemy-list-item'>
         <td>
@@ -23,6 +23,8 @@ export default class extends PureComponent {
         <td style={{
           color: statusColor[status]
         }}>{statusText[status]}</td>
+        <td>{qqgroup}</td>
+        <td>{comment}</td>
       </tr>
     )
   }
