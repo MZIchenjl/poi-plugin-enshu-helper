@@ -1,9 +1,11 @@
 #enshu-helper {
     padding: 1em;
+    word-wrap: break-word;
+    word-break: break-all;
 }
 
 #enshu-helper .enemy-list {
-    width: 400px;
+    width: 500px;
     margin-top: 1em;
     margin-bottom: 1em;
 }
