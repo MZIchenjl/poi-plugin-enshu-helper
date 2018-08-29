@@ -21,7 +21,7 @@ const { _, notify, toast } = window
 const URL = 'https://api.senka.com.ru/enshuhelper/query'
 
 export const reactClass = connect(state => poiDataSelector(state))(
-  class PluginSenkaViewer extends PureComponent {
+  class PluginEnshuHelper extends PureComponent {
     constructor(props) {
       super(props)
       this.state = {
