@@ -28,9 +28,6 @@
     "bugs": {
         "url": "https://github.com/kcwikizh/poi-plugin-enshu-helper/issues"
     },
-    "dependencies": {
-        "axios": "^0.18.0"
-    },
     "devDependencies": {
         "babel-eslint": "^8.2.6",
         "eslint": "^5.3.0",
