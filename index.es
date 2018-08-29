@@ -66,6 +66,7 @@ export const reactClass = connect(state => poiDataSelector(state))(
       console.log('POST data: ', JSON.stringify(data))
       // eslint-disable-next-line no-undef
       fetch(URL, {
+        method: 'POST',
         body: JSON.stringify(data)
       })
         .then(res => res.data)
