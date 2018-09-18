@@ -1,4 +1,5 @@
 import path from 'path'
+import axios from 'axios'
 import { connect } from 'react-redux'
 import React, { PureComponent } from 'react'
 import { createSelector } from 'reselect'
@@ -64,11 +65,7 @@ export const reactClass = connect(state => poiDataSelector(state))(
         api_enemy_list: enemies
       }
       console.log('POST data: ', JSON.stringify(data))
-      // eslint-disable-next-line no-undef
-      fetch(URL, {
-        method: 'POST',
-        body: JSON.stringify(data)
-      })
+      axios.post(URL, data)
         .then(res => res.data)
         .then(res => {
           switch (res.code) {
