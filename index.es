@@ -1,5 +1,4 @@
 import path from 'path'
-import axios from 'axios'
 import { connect } from 'react-redux'
 import React, { PureComponent } from 'react'
 import { createSelector } from 'reselect'
@@ -64,9 +63,14 @@ export const reactClass = connect(state => poiDataSelector(state))(
         api_member_id: api_member_id,
         api_enemy_list: enemies
       }
-      console.log('POST data: ', JSON.stringify(data))
-      axios.post(URL, data)
-        .then(res => res.data)
+      const reqBody = JSON.stringify(data)
+      console.log('POST data: ', reqBody)
+      fetch(URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: reqBody
+      })
+        .then(res => res.json())
         .then(res => {
           switch (res.code) {
             case 1:
@@ -134,10 +138,7 @@ export const reactClass = connect(state => poiDataSelector(state))(
           </thead>
           <tbody>
             {_.map(api_list, enemy => (
-              <EnemyInfo
-                key={enemy.id}
-                {...enemy}
-              />
+              <EnemyInfo key={enemy.id} {...enemy} />
             ))}
           </tbody>
         </Table>
@@ -154,16 +155,14 @@ export const reactClass = connect(state => poiDataSelector(state))(
       const { api_member_id } = this.props
       return (
         <div id='enshu-helper'>
-          <link rel='stylesheet' href={path.join(__dirname, 'assets/enshu-helper.css')} />
-          <div className='member_id'>
-            ID: {api_member_id}
-          </div>
+          <link rel='stylesheet' href={path.join(__dirname, 'assets/enshu-helper.css')}/>
+          <div className='member_id'>ID: {api_member_id}</div>
           {api_list.length ? (
-            <Button bsStyle='primary'
+            <Button
+              bsStyle='primary'
               onClick={this.submit.bind(this)}
-              disabled={api_list.every(enemy => !!enemy.status)}>
-              提交
-            </Button>
+              disabled={api_list.every(enemy => !!enemy.status)}
+            >提交</Button>
           ) : null}
           {this.renderList()}
         </div>
@@ -172,10 +171,6 @@ export const reactClass = connect(state => poiDataSelector(state))(
   }
 )
 
-const switchPluginPath = [
-  '/kcsapi/api_get_member/practice'
-]
+const switchPluginPath = ['/kcsapi/api_get_member/practice']
 
-export {
-  switchPluginPath
-}
+export { switchPluginPath }
