@@ -24,7 +24,8 @@ export const reactClass = connect(state => poiDataSelector(state))(
     constructor(props) {
       super(props)
       this.state = {
-        api_list: []
+        api_list: [],
+        fetching: false
       }
     }
     handleResponse(e) {
@@ -50,6 +51,9 @@ export const reactClass = connect(state => poiDataSelector(state))(
       }
     }
     submit() {
+      if (this.state.fetching) {
+        return
+      }
       const { api_member_id } = this.props
       const { api_list } = this.state
       const enemies = api_list.reduce((acc, enemy) => {
@@ -63,59 +67,68 @@ export const reactClass = connect(state => poiDataSelector(state))(
         api_member_id: api_member_id,
         api_enemy_list: enemies
       }
-      const reqBody = JSON.stringify(data)
-      console.log('POST data: ', reqBody)
-      fetch(URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: reqBody
-      })
-        .then(res => res.json())
-        .then(res => {
-          switch (res.code) {
-            case 1:
-              toast(res.info || '未知错误')
-              enemies.forEach(memberid => {
-                const idx = api_list.findIndex(t => t.id === memberid)
-                if (idx !== -1) {
-                  api_list[idx].status = 2
-                }
-              })
-              break
-            case 2:
-              const matchedIds = res.matchlist.map(t => t.memberid)
-              const infoList = res.matchlist.reduce((acc, t) => {
-                const ret = acc
-                ret[t.memberid] = {
-                  comment: t.comments,
-                  qqgroup: t.qqgroup
-                }
-                return ret
-              }, {})
-              enemies.forEach(memberid => {
-                const idx = api_list.findIndex(t => t.id === memberid)
-                if (idx !== -1) {
-                  if (matchedIds.includes(memberid)) {
-                    api_list[idx].status = 1
-                    api_list[idx].comment = infoList[memberid].comment
-                    api_list[idx].qqgroup = infoList[memberid].qqgroup
-                  } else {
+      this.setState({
+        fetching: true
+      }, () => {
+        const reqBody = JSON.stringify(data)
+        console.log('POST data: ', reqBody)
+        fetch(URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: reqBody
+        })
+          .then(res => res.json())
+          .then(res => {
+            switch (res.code) {
+              case 1:
+                toast(res.info || '未知错误')
+                enemies.forEach(memberid => {
+                  const idx = api_list.findIndex(t => t.id === memberid)
+                  if (idx !== -1) {
                     api_list[idx].status = 2
                   }
-                }
-              })
-              break
-            default:
-              break
-          }
-          this.setState({
-            api_list: [].concat(api_list)
+                })
+                break
+              case 2:
+                const matchedIds = res.matchlist.map(t => t.memberid)
+                const infoList = res.matchlist.reduce((acc, t) => {
+                  const ret = acc
+                  ret[t.memberid] = {
+                    comment: t.comments,
+                    qqgroup: t.qqgroup
+                  }
+                  return ret
+                }, {})
+                enemies.forEach(memberid => {
+                  const idx = api_list.findIndex(t => t.id === memberid)
+                  if (idx !== -1) {
+                    if (matchedIds.includes(memberid)) {
+                      api_list[idx].status = 1
+                      api_list[idx].comment = infoList[memberid].comment
+                      api_list[idx].qqgroup = infoList[memberid].qqgroup
+                    } else {
+                      api_list[idx].status = 2
+                    }
+                  }
+                })
+                break
+              default:
+                break
+            }
+            this.setState({
+              fetching: false,
+              api_list: [].concat(api_list)
+            })
           })
-        })
-        .catch(err => {
-          console.log(err)
-          notify('接口请求错误: ' + err.toString())
-        })
+          .catch(err => {
+            this.setState({
+              fetching: false
+            })
+            console.log(err)
+            notify('接口请求错误: ' + err.toString())
+          })
+      })
+
     }
     renderList() {
       const { api_list } = this.state
@@ -151,7 +164,7 @@ export const reactClass = connect(state => poiDataSelector(state))(
       window.removeEventListener('game.response', this.handleResponse.bind(this))
     }
     render() {
-      const { api_list } = this.state
+      const { api_list, fetching } = this.state
       const { api_member_id } = this.props
       return (
         <div id='enshu-helper'>
@@ -161,7 +174,7 @@ export const reactClass = connect(state => poiDataSelector(state))(
             <Button
               bsStyle='primary'
               onClick={this.submit.bind(this)}
-              disabled={api_list.every(enemy => !!enemy.status)}
+              disabled={api_list.every(enemy => !!enemy.status) || fetching}
             >提交</Button>
           ) : null}
           {this.renderList()}
