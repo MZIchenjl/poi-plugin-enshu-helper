@@ -79,9 +79,9 @@ export const reactClass = connect(state => poiDataSelector(state))(
         })
           .then(res => res.json())
           .then(res => {
-            switch (res.code) {
-              case 1:
-                toast(res.info || '未知错误')
+            switch (res.status) {
+              case "ERROR":
+                toast(res.msg || '系统错误')
                 enemies.forEach(memberid => {
                   const idx = api_list.findIndex(t => t.id === memberid)
                   if (idx !== -1) {
@@ -89,8 +89,17 @@ export const reactClass = connect(state => poiDataSelector(state))(
                   }
                 })
                 break
-              case 2:
-                const matchedIds = res.matchlist.map(t => t.memberid)
+              case "FAILURE":
+                toast(res.msg || '未知错误')
+                enemies.forEach(memberid => {
+                  const idx = api_list.findIndex(t => t.id === memberid)
+                  if (idx !== -1) {
+                    api_list[idx].status = 2
+                  }
+                })
+                break
+              case "SUCCESS":
+                const matchedIds = res.data.map(t => t.memberid)
                 const infoList = res.matchlist.reduce((acc, t) => {
                   const ret = acc
                   ret[t.memberid] = {
