@@ -100,7 +100,7 @@ export const reactClass = connect(state => poiDataSelector(state))(
                 break
               case "SUCCESS":
                 const matchedIds = res.data.map(t => t.memberid)
-                const infoList = res.matchlist.reduce((acc, t) => {
+                const infoList = res.data.reduce((acc, t) => {
                   const ret = acc
                   ret[t.memberid] = {
                     comment: t.comments,
