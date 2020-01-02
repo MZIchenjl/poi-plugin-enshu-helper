@@ -2,7 +2,7 @@ import path from 'path'
 import { connect } from 'react-redux'
 import React, { PureComponent } from 'react'
 import { createSelector } from 'reselect'
-import { Table, Button, Well } from 'react-bootstrap'
+import { Table, Button, Well, Radio } from 'react-bootstrap'
 
 import { basicSelector } from 'views/utils/selectors'
 
@@ -25,6 +25,7 @@ export const reactClass = connect(state => poiDataSelector(state))(
       super(props)
       this.state = {
         api_list: [],
+        register_type: 'qq',
         fetching: false
       }
     }
@@ -55,7 +56,7 @@ export const reactClass = connect(state => poiDataSelector(state))(
         return
       }
       const { api_member_id } = this.props
-      const { api_list } = this.state
+      const { api_list, register_type } = this.state
       const enemies = api_list.reduce((acc, enemy) => {
         const ret = acc
         if (!enemy.status) {
@@ -64,6 +65,7 @@ export const reactClass = connect(state => poiDataSelector(state))(
         return ret
       }, [])
       const data = {
+        register_type,
         api_member_id: api_member_id,
         api_enemy_list: enemies
       }
@@ -166,6 +168,11 @@ export const reactClass = connect(state => poiDataSelector(state))(
         </Table>
       )
     }
+    setRegisterType(type = 'qq') {
+      this.setState({
+        register_type: type
+      })
+    }
     componentDidMount() {
       window.addEventListener('game.response', this.handleResponse.bind(this))
     }
@@ -177,8 +184,12 @@ export const reactClass = connect(state => poiDataSelector(state))(
       const { api_member_id } = this.props
       return (
         <div id='enshu-helper'>
-          <link rel='stylesheet' href={path.join(__dirname, 'assets/enshu-helper.css')}/>
+          <link rel='stylesheet' href={path.join(__dirname, 'assets/enshu-helper.css')} />
           <div className='member_id'>ID: {api_member_id}</div>
+          <div>
+            <Radio name='register_type' onClick={() => this.setRegisterType('qq')}>QQ</Radio>
+            <Radio name='register_type' onClick={() => this.setRegisterType('discord')}>Discord</Radio>
+          </div>
           {api_list.length ? (
             <Button
               bsStyle='primary'
