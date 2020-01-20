@@ -17,7 +17,7 @@ import EnemyInfo from './components/EnemyInfo'
 
 const { _, notify, toast } = window
 
-const URL = 'https://api.senka.com.ru/enshuhelper/query'
+const URL = 'https://api.kancolle.moe/enshuhelper/query'
 
 export const reactClass = connect(state => poiDataSelector(state))(
   class PluginEnshuHelper extends PureComponent {
